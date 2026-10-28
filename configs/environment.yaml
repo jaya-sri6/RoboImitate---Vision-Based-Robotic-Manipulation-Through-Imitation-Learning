@@ -1,0 +1,79 @@
+# Environment configuration for RoboImitate Tabletop Pick-and-Place
+task: "pick_and_place"
+env_name: "RoboImitate-PickAndPlace-v0"
+
+# Simulation parameters
+physics:
+  timestep: 0.005
+  frame_skip: 5           # Effective control frequency = 40 Hz (dt = 0.025s)
+  max_episode_steps: 60   # Episode limit
+
+# Workspace boundaries [min, max] in meters
+workspace:
+  x: [-0.25, 0.25]
+  y: [0.35, 0.75]
+  z: [0.38, 0.70]
+
+# Table and targets
+table:
+  height: 0.4
+  surface_z: 0.42
+target_zone:
+  position: [0.15, 0.55, 0.42] # Default target drop zone (x, y, z)
+  radius: 0.045                # Acceptance radius for successful placement
+  height_tolerance: 0.06
+
+# Object configurations
+object:
+  type: "box"
+  size: [0.02, 0.02, 0.02]     # Half-dimensions (4cm cube)
+  mass: 0.05
+  default_pos: [-0.12, 0.50, 0.42]
+
+# Training distribution for object initialization (uniform box)
+train_object_range:
+  x: [-0.18, -0.06]
+  y: [0.44, 0.56]
+
+# 5 distinct held-out generalization test positions/zones (outside train_object_range)
+held_out_positions:
+  - name: "held_out_far_left"
+    pos: [-0.22, 0.50, 0.42]
+  - name: "held_out_center_near"
+    pos: [0.0, 0.40, 0.42]
+  - name: "held_out_far_back"
+    pos: [-0.10, 0.65, 0.42]
+  - name: "held_out_near_left"
+    pos: [-0.20, 0.38, 0.42]
+  - name: "held_out_center_back"
+    pos: [0.0, 0.65, 0.42]
+
+# Camera observation settings (Vision-based)
+camera:
+  enabled: true
+  width: 84
+  height: 84
+  camera_name: "overhead_cam"
+  fov: 45.0
+  lookat: [0.0, 0.55, 0.42]
+  distance: 0.75
+  elevation: -55.0
+  azimuth: 90.0
+
+# Action space
+# Control: [delta_x, delta_y, delta_z, gripper_command]
+# delta_xyz in [-0.04, +0.04] m/step, gripper in [-1.0 (open), +1.0 (close)]
+action:
+  type: "delta_ee_pos"
+  dim: 4
+  min: [-0.04, -0.04, -0.04, -1.0]
+  max: [0.04, 0.04, 0.04, 1.0]
+
+# Proprioceptive state (optional auxiliary input)
+proprioception:
+  dim: 4 # [ee_x, ee_y, ee_z, gripper_state]
+
+# Success criteria
+success:
+  min_grasp_height: 0.45       # Object must be lifted at least this high
+  target_distance_thresh: 0.04 # Final distance to target drop zone

@@ -1,0 +1,44 @@
+# Evaluation configuration for RoboImitate
+experiment_name: "policy_evaluation"
+seed: 1234
+device: "auto"
+
+# Evaluation targets
+evaluation:
+  num_episodes: 20            # Benchmark size (configurable up to 100)
+  smoke_test_episodes: 5      # Quick smoke test size
+  max_steps: 60
+  render_video: true
+  video_fps: 20
+  results_dir: "results"
+
+# Generalization evaluation settings
+generalization:
+  test_training_distribution: true
+  test_held_out_positions: true
+  positions:
+    - name: "held_out_far_left"
+      pos: [-0.22, 0.50, 0.42]
+    - name: "held_out_center_near"
+      pos: [0.0, 0.40, 0.42]
+    - name: "held_out_far_back"
+      pos: [-0.10, 0.65, 0.42]
+    - name: "held_out_near_left"
+      pos: [-0.20, 0.38, 0.42]
+    - name: "held_out_center_back"
+      pos: [0.0, 0.65, 0.42]
+
+# Scripted baseline comparison
+baseline:
+  enabled: true
+  controller_type: "scripted_pick_and_place"
+  num_episodes: 20
+
+# Failure classification categories
+failure_categories:
+  - "reach_failure"       # End effector never reached object (distance > 0.05m)
+  - "grasp_failure"       # Failed to enclose or lift object off table
+  - "drop_failure"        # Lifted object but dropped it before reaching target
+  - "placement_failure"   # Reached target zone but failed to release inside target
+  - "timeout"             # Reached max steps without completing sequence
+  - "out_of_bounds"       # End effector or object moved outside workspace

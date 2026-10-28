@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roboimitate"
+version = "0.1.0"
+description = "Vision-Based Robotic Manipulation Through Imitation Learning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "RoboImitate Authors"}
+]
+keywords = ["robotics", "imitation-learning", "behavior-cloning", "act", "mujoco", "pytorch"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "gymnasium>=0.29.0",
+    "mujoco>=3.0.0",
+    "opencv-python>=4.8.0",
+    "matplotlib>=3.7.0",
+    "pandas>=2.0.0",
+    "pyyaml>=6.0",
+    "h5py>=3.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["roboimitate*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
